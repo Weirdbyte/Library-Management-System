@@ -26,4 +26,5 @@ app.use(express.urlencoded({extended: true}));
 connectDB();
 
 //use errormiddleware at last
+//it will not be automatically execute it will execute only if (next is called)
 app.use(errorMiddleware);

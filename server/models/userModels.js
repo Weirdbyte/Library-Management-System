@@ -13,7 +13,7 @@ const userSchema =new mongoose.Schema({
     password:{
         type:String,
         required:true,
-        select:false,
+        select:false,//this will not be get when u get your user
     },
     role:{
         type:String,
@@ -44,6 +44,7 @@ const userSchema =new mongoose.Schema({
         public_id:String,
         url: String,
     },
+
     verificationCode:Number,
     verificationExpire:Date,
     resetPasswordToken:String,
