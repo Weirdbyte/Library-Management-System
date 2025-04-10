@@ -1,19 +1,22 @@
+import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 import ErrorHandler from "../middlewares/errorMiddlewares.js";
-import {User, user} from "../models/userModels.js";
+import {User} from "../models/userModels.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import { sendVerificationCode } from "../utils/sendVerificationCode.js";
+
 
 //creating a register function
-export const register =catchAsyncErrors(async(requestAnimationFrame,res,next)=>{
+export const register =catchAsyncErrors(async(req,res,next)=>{
     try{
-        const {name,email,password}=requestAnimationFrame.body;
+        const {name,email,password}=req.body;
         if(!name || !email || !password){ //if any of this is missing
             return next(new ErrorHandler("please enter all fields.",400));
         }
         //check if user is already registerd
         const isRegistered=await User.findOne({email,accountVerified:true})
         if(isRegistered){
-            return next(new ErrorHandler("user already exits.",400));
+            return next(new ErrorHandler("user already exists.",400));
         }
         //if no.of wrong attempts exceed , then try after some time
         const registerationAttemptsByUser=await User.find({
@@ -22,11 +25,11 @@ export const register =catchAsyncErrors(async(requestAnimationFrame,res,next)=>{
         });
         if(registerationAttemptsByUser.length>=5){
             return next(
-                new ErrorHandler("You have exceeded the number of registeration attemps. please contact support",400)
+                new ErrorHandler("You have exceeded the number of registration attempts. please contact support",400)
             )
         }
         //hash the password
-        if(password.length<8 || password.lenth>16){
+        if(password.length<8 || password.length>16){
             return next(new ErrorHandler("password must be between 8 and 16 characters.",400));
         }
         const hashedPassword=await bcrypt.hash(password,10);//10
