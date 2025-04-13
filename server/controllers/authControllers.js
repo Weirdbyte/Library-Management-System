@@ -4,6 +4,7 @@ import {User} from "../models/userModels.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { sendVerificationCode } from "../utils/sendVerificationCode.js";
+import { sendToken } from "../utils/sendToken.js";
 
 
 //creating a register function
@@ -34,16 +35,70 @@ export const register =catchAsyncErrors(async(req,res,next)=>{
         }
         const hashedPassword=await bcrypt.hash(password,10);//10
         //creating a user
-        const user=await User.create({
+        const user = await User.create({
             name,
             email,
             password:hashedPassword,
         })
         //generating the verification code and send to email(expiry time is also generated)
-        const verificationCode=await user.generateVerificationCode();
+        const verificationCode = await user.generateVerificationCode();
         await user.save();
         sendVerificationCode(verificationCode,email,res);
     }catch(error){
     next(error);
 }
 });
+
+
+export const verifyOTP = catchAsyncErrors(async(req,res,next) =>{
+    console.log('Headers:', req.headers);
+    console.log('Body:', req.body);
+    
+    const {email,otp} = req.body;
+    if(!email || !otp){ 
+        return next(new ErrorHandler("Email or Otp is missing.",400));
+    } 
+
+    try {
+        const userAttempts = await User.find({
+            email,
+            accountVerified: false,
+        }).sort({ createdAt: -1 });
+
+        if (userAttempts.length === 0) {
+            return next(new ErrorHandler("No user found with this email.", 404));
+        }
+
+        const user = userAttempts[0];  // Get the most recent attempt
+        if(userAttempts.length > 1){   // if there are multiple attempts, delete the older ones
+            await User.deleteMany({        
+                _id : { $ne: user._id },
+                email,
+                accountVerified: false,
+            })
+        }
+
+        //check otp
+        if(user.verificationCode !== Number(otp)){
+            return next(new ErrorHandler("Invalid OTP",400));
+        }
+
+        const currentTime = Date.now();
+        const otpExpiryTime = user.verificationCodeExpire.getTime();
+        if(currentTime > otpExpiryTime){
+            return next(new ErrorHandler("OTP expired",400));
+        } 
+
+        //if correctotp and not expired
+        user.accountVerified = true;
+        user.verificationCode = null;
+        user.verificationCodeExpire = null;
+        await user.save({validateModifiedOnly:true});
+
+        sendToken(user, 200 , "Account verified successfully", res);
+
+    }catch (error) {
+        return next(new ErrorHandler("Internal server error",500));
+        
+    }
+})

@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
+
 const userSchema =new mongoose.Schema({
     name:{
         type:String,
@@ -46,7 +48,7 @@ const userSchema =new mongoose.Schema({
     },
 
     verificationCode:Number,
-    verificationExpire:Date,
+    verificationCodeExpire:Date,
     resetPasswordToken:String,
     resetPasswordExpire:Date,   
 },
@@ -54,18 +56,22 @@ const userSchema =new mongoose.Schema({
 timestamps:true
 }
 );
-// 129 will generate a five digit number
-userSchema.methods.generateVerifivationCode=function(){
- function generateRandomFiveDigitNumber(){
-    const firstDigit=Math.floor(Math.random()*9)+1;//1-9 not 0
-    const remainingDigits=Math.floor(Math.random()*10000).toString().padEnd(4,0);//maxlen=4 
-    //A string to convert into a number.
-    // 4 +"9671"="49671"  
-    return parseInt(firstDigit+remainingDigits);
+
+
+userSchema.methods.generateVerificationCode=function(){
+    const firstDigit=Math.floor(Math.random()*9)+1;  //1-9 not 0
+    const remainingDigits=Math.floor(Math.random()*10000).toString().padEnd(4,0);//maxlen=4   
+    const verificationCode = parseInt(firstDigit+remainingDigits);  // 4 +"9671"="49671"
+    this.verificationCode=verificationCode;
+    this.verificationCodeExpire=Date.now()+15*60*1000;  //15min
+    return verificationCode;
 }
-const verificationCode=generateRandomFiveDigitNumber();
-this.verificationCode=verificationCode;
-this.verificationExpire=Date.now()+15*60*1000;//15min
-return verificationCode;
+
+userSchema.methods.generateToken=function(){
+    const token = jwt.sign({_id:this._id},process.env.JWT_SECRET_KEY,{ // sign(id,secret,options)
+        expiresIn:process.env.JWT_EXPIRES,
+    });
+    return token;
 }
+
 export const User=mongoose.model("User",userSchema);

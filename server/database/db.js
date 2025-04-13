@@ -1,11 +1,11 @@
 import mongoose, {connect} from "mongoose"
-export const connectDB=()=>{
-    mongoose.connect(process.env.MONGO_URI,{
-        dbName:"MERN LIBRARY MANAGEMENT SYSTEM"
-    }).then(()=>{
-        console.log(`Database connected successfully`);
-    }).catch((err)=>{
-        console.log("error connecting to database",err);
-    })
-
+export const connectDB = async ()=> {
+    try {
+        await mongoose.connect(process.env.MONGO_URI, {
+            dbName: "LIBRARY_MANAGEMENT_SYSTEM"
+        });
+        console.log(`Database connected successfully...`);
+    } catch (err) {
+        console.log("Error connecting to database", err);
+    }
 }
