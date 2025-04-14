@@ -2,12 +2,10 @@ import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 import ErrorHandler from "../middlewares/errorMiddlewares.js";
 import {User} from "../models/userModels.js";
 import bcrypt from "bcrypt";
-import crypto from "crypto";
 import { sendVerificationCode } from "../utils/sendVerificationCode.js";
 import { sendToken } from "../utils/sendToken.js";
 
 
-//creating a register function
 export const register =catchAsyncErrors(async(req,res,next)=>{
     try{
         const {name,email,password}=req.body;
@@ -51,8 +49,8 @@ export const register =catchAsyncErrors(async(req,res,next)=>{
 
 
 export const verifyOTP = catchAsyncErrors(async(req,res,next) =>{
-    console.log('Headers:', req.headers);
-    console.log('Body:', req.body);
+    // console.log('Headers:', req.headers);
+    // console.log('Body:', req.body);
     
     const {email,otp} = req.body;
     if(!email || !otp){ 
@@ -101,4 +99,46 @@ export const verifyOTP = catchAsyncErrors(async(req,res,next) =>{
         return next(new ErrorHandler("Internal server error",500));
         
     }
+})
+
+
+
+export const login = catchAsyncErrors(async(req,res,next)=>{
+    const {email,password} = req.body;
+    if(!email || !password){
+        return next(new ErrorHandler("Please enter all the required fields",404));
+    }
+
+    const user = await User.findOne({email , accountVerified:true}).select("+password");
+    if(!user){
+        return next(new ErrorHandler("Invalid email or password",400));
+    }
+    const isPassMatched = await bcrypt.compare(password,user.password);
+    if(!isPassMatched){
+        return next(new ErrorHandler("Invalid email or password",400));
+    }
+
+    sendToken(user,200,"Login Successful",res);
+})
+
+
+export const logout = catchAsyncErrors(async(req,res,next)=>{
+    res.status(200)
+    .cookie("token","", {
+        expires: new Date(Date.now()),
+        httpOnly: true
+    })
+    .json({
+        success: true,
+        message: "LogOut Successfull.",
+    })
+})
+
+
+export const getUser = catchAsyncErrors(async(req,res,next)=>{
+    const user = req.user;
+    res.status(200).json({
+        success: true,
+        user,
+    })
 })
