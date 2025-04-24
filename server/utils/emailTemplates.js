@@ -41,3 +41,22 @@ export function forgotPasswordEmailTemplate(resetPasswordUrl) {
       </div>
     `;
 }
+
+
+export function dueTodayReminderEmailTemplate(userName, bookTitle) {
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; background-color: #1a1a1a;">
+      <h2 style="color: #fff; text-align: center;">Book Return Reminder</h2>
+      <p style="font-size: 16px; color: #ccc;">Dear ${userName},</p>
+      <p style="font-size: 16px; color: #ccc;">Just a friendly reminder that the book you borrowed, <strong style="color: #fff;">${bookTitle}</strong>, is due for return <strong style="color: #fff;">today</strong>.</p>
+      <p style="font-size: 16px; color: #ccc;">Please make sure to return it on time to avoid any late fees and to help other readers access it too.</p>
+      <p style="font-size: 16px; color: #ccc;">Thank you for using <strong style="color: #fff;">BookNest</strong>.</p>
+
+      <hr style="border: none; border-top: 1px solid #333; margin: 30px 0;" />
+      <footer style="margin-top: 20px; text-align: center; font-size: 14px; color: #666;">
+        <p>Best regards,<br>BookNest Team</p>
+        <p style="font-size: 12px; color: #444;">This is an automated message. Please do not reply to this email.</p>
+      </footer>
+    </div>
+  `;
+}
