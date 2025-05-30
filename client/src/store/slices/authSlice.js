@@ -140,175 +140,92 @@ const authSlice = createSlice({
 	},
 });
 
+
 export const resetAuthSlice = () => (dispatch) => {
-	dispatch(authSlice.actions.resetAuthSlice());
+  dispatch(authSlice.actions.resetAuthSlice());
 };
 
 export const register = (data) => async (dispatch) => {
-	dispatch(authSlice.actions.registerRequest());
-	await axios
-		.post("http://localhost:4000/api/v1/auth/register", data, {
-			withCredentials: true,
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})
-		.then((res) => {
-			dispatch(authSlice.actions.registerSuccess(res.data));
-		})
-		.catch((error) => {
-			dispatch(
-				authSlice.actions.registerFailed(error.response.data.message)
-			);
-		});
+  dispatch(authSlice.actions.registerRequest());
+  try {
+    const res = await axios.post("http://localhost:4000/api/v1/auth/register", data, { withCredentials: true, headers: { "Content-Type": "application/json" } });
+    dispatch(authSlice.actions.registerSuccess(res.data));
+  } catch (error) {
+    dispatch(authSlice.actions.registerFailed(error.response?.data?.message || error.message));
+  }
 };
 
 export const otpVerification = (email, otp) => async (dispatch) => {
-	dispatch(authSlice.actions.otpVerificationRequest());
-	await axios
-		.post(
-			"http://localhost:4000/api/v1/auth/verify-otp",
-			{ email, otp },
-			{
-				withCredentials: true,
-				headers: {
-					"Content-Type": "application/json",
-				},
-			}
-		)
-		.then((res) => {
-			dispatch(authSlice.actions.otpVerificationSuccess(res.data));
-		})
-		.catch((error) => {
-			dispatch(
-				authSlice.actions.otpVerificationFailed(
-					error.response.data.message
-				)
-			);
-		});
+  dispatch(authSlice.actions.otpVerificationRequest());
+  try {
+    const res = await axios.post("http://localhost:4000/api/v1/auth/verify-otp", { email, otp }, { withCredentials: true, headers: { "Content-Type": "application/json" } });
+    dispatch(authSlice.actions.otpVerificationSuccess(res.data));
+  } catch (error) {
+    dispatch(authSlice.actions.otpVerificationFailed(error.response?.data?.message || error.message));
+  }
 };
 
 export const login = (data) => async (dispatch) => {
-	dispatch(authSlice.actions.loginRequest());
-	await axios
-		.post("http://localhost:4000/api/v1/auth/login", data, {
-			withCredentials: true,
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})
-		.then((res) => {
-			dispatch(authSlice.actions.loginSuccess(res.data));
-		})
-		.catch((error) => {
-			dispatch(
-				authSlice.actions.loginFailed(error.response.data.message)
-			);
-		});
+  dispatch(authSlice.actions.loginRequest());
+  try {
+    const res = await axios.post("http://localhost:4000/api/v1/auth/login", data, { withCredentials: true, headers: { "Content-Type": "application/json" } });
+    dispatch(authSlice.actions.loginSuccess(res.data));
+  } catch (error) {
+    dispatch(authSlice.actions.loginFailed(error.response?.data?.message || error.message));
+  }
 };
 
 export const logout = () => async (dispatch) => {
-	dispatch(authSlice.actions.logoutRequest());
-	await axios
-		.get("http://localhost:4000/api/v1/auth/logout", {
-			withCredentials: true,
-		})
-		.then((res) => {
-			dispatch(authSlice.actions.logoutSuccess(res.data.message));
-			dispatch(authSlice.actions.resetAuthSlice());
-		})
-		.catch((error) => {
-			dispatch(
-				authSlice.actions.logoutFailed(error.response.data.message)
-			);
-		});
+  dispatch(authSlice.actions.logoutRequest());
+  try {
+    const res = await axios.get("http://localhost:4000/api/v1/auth/logout", { withCredentials: true });
+	console.log(res);
+    dispatch(authSlice.actions.logoutSuccess(res.data.message));
+    dispatch(authSlice.actions.resetAuthSlice());
+  } catch (error) {
+	console.log(error);
+    dispatch(authSlice.actions.logoutFailed(error.response?.data?.message || error.message));
+  }
 };
 
 export const getUser = () => async (dispatch) => {
-	dispatch(authSlice.actions.getUserRequest());
-	await axios
-		.get("http://localhost:4000/api/v1/auth/me", {
-			withCredentials: true,
-		})
-		.then((res) => {
-			dispatch(authSlice.actions.getUserSuccess(res.data));
-		})
-		.catch((error) => {
-			dispatch(
-				authSlice.actions.getUserFailed(error.response.data.message)
-			);
-		});
+  dispatch(authSlice.actions.getUserRequest());
+  try {
+    const res = await axios.get("http://localhost:4000/api/v1/auth/me", { withCredentials: true });
+    dispatch(authSlice.actions.getUserSuccess(res.data));
+  } catch (error) {
+    dispatch(authSlice.actions.getUserFailed(error.response?.data?.message || error.message));
+  }
 };
 
 export const forgotPassword = (email) => async (dispatch) => {
-	dispatch(authSlice.actions.forgotPasswordRequest());
-	await axios
-		.post(
-			"http://localhost:4000/api/v1/auth/password/forgot",
-			{ email },
-			{
-				withCredentials: true,
-				headers: {
-					"Content-Type": "application/json",
-				},
-			}
-		)
-		.then((res) => {
-			dispatch(authSlice.actions.forgotPasswordSuccess(res.data));
-		})
-		.catch((error) => {
-			dispatch(
-				authSlice.actions.forgotPasswordFailed(
-					error.response.data.message
-				)
-			);
-		});
+  dispatch(authSlice.actions.forgotPasswordRequest());
+  try {
+    const res = await axios.post("http://localhost:4000/api/v1/auth/password/forgot", { email }, { withCredentials: true, headers: { "Content-Type": "application/json" } });
+    dispatch(authSlice.actions.forgotPasswordSuccess(res.data));
+  } catch (error) {
+    dispatch(authSlice.actions.forgotPasswordFailed(error.response?.data?.message || error.message));
+  }
 };
 
 export const resetPassword = (data, token) => async (dispatch) => {
-	dispatch(authSlice.actions.resetPasswordRequest());
-	await axios
-		.put(
-			`http://localhost:4000/api/v1/auth/password/reset/${token}`,
-			data,
-			{
-				withCredentials: true,
-				headers: {
-					"Content-Type": "application/json",
-				},
-			}
-		)
-		.then((res) => {
-			dispatch(authSlice.actions.resetPasswordSuccess(res.data));
-		})
-		.catch((error) => {
-			dispatch(
-				authSlice.actions.resetPasswordFailed(
-					error.response.data.message
-				)
-			);
-		});
+  dispatch(authSlice.actions.resetPasswordRequest());
+  try {
+    const res = await axios.put(`http://localhost:4000/api/v1/auth/password/reset/${token}`, data, { withCredentials: true, headers: { "Content-Type": "application/json" } });
+    dispatch(authSlice.actions.resetPasswordSuccess(res.data));
+  } catch (error) {
+    dispatch(authSlice.actions.resetPasswordFailed(error.response?.data?.message || error.message));
+  }
 };
 
 export const updatePassword = (data) => async (dispatch) => {
-	dispatch(authSlice.actions.updatePasswordRequest());
-	await axios
-		.put(`http://localhost:4000/api/v1/auth/password/update`, data, {
-			withCredentials: true,
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})
-		.then((res) => {
-			dispatch(authSlice.actions.updatePasswordSuccess(res.data.message));
-		})
-		.catch((error) => {
-			dispatch(
-				authSlice.actions.updatePasswordFailed(
-					error.response.data.message
-				)
-			);
-		});
+  dispatch(authSlice.actions.updatePasswordRequest());
+  try {
+    const res = await axios.put("http://localhost:4000/api/v1/auth/password/update", data, { withCredentials: true, headers: { "Content-Type": "application/json" } });
+    dispatch(authSlice.actions.updatePasswordSuccess(res.data.message));
+  } catch (error) {
+    dispatch(authSlice.actions.updatePasswordFailed(error.response?.data?.message || error.message));
+  }
 };
 
 export default authSlice.reducer;

@@ -29,7 +29,13 @@ const SideBar = ({ isSideBarOpen, setIsSideBarOpen, setSelectedComponent }) => {
   );
 
   const handleLogout = () => {
-    dispatch(logout());
+  dispatch(logout())
+      .then(() => {
+          setSelectedComponent("Dashboard");
+      })
+      .catch((error) => {
+          console.error("Logout failed:", error);
+      });
   };
 
   useEffect(() => {
