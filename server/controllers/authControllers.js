@@ -41,6 +41,7 @@ export const register =catchAsyncErrors(async(req,res,next)=>{
             email,
             password:hashedPassword,
         })
+        
         //generating the verification code and send to email(expiry time is also generated)
         const verificationCode = await user.generateVerificationCode();
         await user.save();

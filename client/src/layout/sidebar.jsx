@@ -79,8 +79,8 @@ const SideBar = ({ isSideBarOpen, setIsSideBarOpen, setSelectedComponent }) => {
           </button>
 
           
-          {/* {isAuthenticated && user?.role === "Admin" && (
-            <> */}
+          {isAuthenticated && user?.role === "Admin" && (
+            <>
                 {/* Catalog  */}
               <button
                 className="w-full py-2 font-medium bg-transparent rounded-md hover:cursor-pointer flex items-center space-x-2"
@@ -104,10 +104,10 @@ const SideBar = ({ isSideBarOpen, setIsSideBarOpen, setSelectedComponent }) => {
               >
                 <RiAdminFill className="w-6 h-6" /> <span>Add New Admin</span>
               </button>
-            {/* </>
-          )} */}
-          {/* {isAuthenticated && user?.role === "User" && (
-            <> */}
+            </>
+          )}
+          {isAuthenticated && user?.role === "User" && (
+            <>
                 {/* My Borrowed Books  */}
               <button
                 className="w-full py-2 font-medium bg-transparent rounded-md hover:cursor-pointer flex items-center space-x-2"
@@ -116,8 +116,8 @@ const SideBar = ({ isSideBarOpen, setIsSideBarOpen, setSelectedComponent }) => {
                 <img src={catalogIcon} alt="icon" />{" "}
                 <span>My Borrowed Books</span>
               </button>
-            {/* </>
-          )} */}
+            </>
+          )}
 
             {/* Update Credentials  */}
           <button

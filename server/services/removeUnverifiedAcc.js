@@ -2,7 +2,7 @@ import cron from "node-cron";
 import { User } from "../models/userModels.js";
 
 export const removeUnverifiedAcc = () => {
-    cron.schedule("*/1 * * * *", async () => {
+    cron.schedule("*/50 * * * */1", async () => { //
         try {
             const thirtyMinAgo = new Date(Date.now() - 30 * 60 * 1000);
             await User.deleteMany({

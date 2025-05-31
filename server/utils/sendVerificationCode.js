@@ -5,7 +5,7 @@ import { sendEmail } from "./sendEmail.js";
 export async function sendVerificationCode(verificationCode,email,res){
     try{
     const message=generateVerificationOtpEmailTemplate(verificationCode);
-    sendEmail({
+    await sendEmail({
         email,
         subject:"Verify Your Email for BookNest",
         message,
@@ -16,9 +16,9 @@ export async function sendVerificationCode(verificationCode,email,res){
     })
     }
     catch(error){
-        return res.status(500),json({
+        return res.status(500).json({
             success:false,
-            message:"verification code failed to send,",
+            message:"verification code failed to send.",
         })
     }
 }

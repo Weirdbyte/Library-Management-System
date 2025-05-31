@@ -48,7 +48,7 @@ const Register = () => {
     <>
       <div className="flex flex-col justify-center md:flex-row h-screen">
         {/* LEFT SIDE */}
-        <div className="hidden w-full md:w-1/2 bg-black text-white md:flex flex-col items-center justify-center p-8 rounded-tr-[80px] rounded-br-[80px]">
+        <div className="hidden w-full md:w-1/2 bg-[#511d81] text-white md:flex flex-col items-center justify-center p-8 rounded-tr-[80px] rounded-br-[80px]">
           <div className="text-center h-[376px]">
             <div className="flex justify-center mb-12">
               <img
@@ -128,7 +128,7 @@ const Register = () => {
               </div>
               <button
                 type="submit"
-                className="border-2 mt-5 border-black w-full font-semibold bg-black text-white py-2 rounded-lg hover:bg-white hover:text-black transition"
+                className="border-2 mt-5 border-[#8236c9] w-full font-semibold bg-[#8236c9] text-white py-2 rounded-lg hover:bg-white hover:text-black transition"
               >
                 SIGN UP
               </button>
