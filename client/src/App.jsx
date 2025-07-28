@@ -10,13 +10,14 @@ import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "./store/slices/authSlice";
 import { fetchAllUsers } from "./store/slices/userSlice";
+import { fetchAllBooks } from "./store/slices/bookSlice";
 
 const App = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getUser());
-    // // dispatch(fetchAllBooks());
+    dispatch(fetchAllBooks());
     // if (isAuthenticated && user?.role === "User") {
     //   dispatch(fetchUserBorrowedBooks());
     // }
